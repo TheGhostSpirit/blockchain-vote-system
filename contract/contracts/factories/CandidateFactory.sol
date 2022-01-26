@@ -2,22 +2,20 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
-import '@openzeppelin/contracts/access/Ownable.sol';
 
 import "../structs/Vote.sol";
 import "../structs/Referendum.sol";
 
-contract VoteFactory is Ownable {
+contract ElectionFactory {
 
   using SafeMath for uint256;
 
-  event NewVote(uint id, bool result);
+  event NewElection(uint id, string name);
 
-  Vote[] public votes;
-  Referendum public referendum = Referendum("question ?");
+  Candidats[] public candidats;
+  Election public election = Election("election presidentielle");
 
-  mapping (uint => address) public voteToOwner;
-  mapping (address => bool) ownerHasVoted;
+  VoteFactory public voteFactory = VoteFactory();
 
   function getReferendumResults() public view returns (Referendum memory, Vote[] memory) {
     return (referendum, votes);
