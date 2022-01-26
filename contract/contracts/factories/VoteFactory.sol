@@ -5,7 +5,6 @@ import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 import "../structs/Vote.sol";
-import "../structs/Referendum.sol";
 
 contract VoteFactory is Ownable {
 
@@ -14,14 +13,9 @@ contract VoteFactory is Ownable {
   event NewVote(uint id, bool result);
 
   Vote[] public votes;
-  Referendum public referendum = Referendum("question ?");
 
   mapping (uint => address) public voteToOwner;
   mapping (address => bool) ownerHasVoted;
-
-  function getReferendumResults() public view returns (Referendum memory, Vote[] memory) {
-    return (referendum, votes);
-  }
 
   function createVote(bool _result) public {
     votes.push(Vote(true));

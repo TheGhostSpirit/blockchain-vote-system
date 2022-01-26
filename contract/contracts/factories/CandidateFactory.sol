@@ -3,32 +3,23 @@ pragma solidity >=0.4.22 <0.9.0;
 
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
-import "../structs/Vote.sol";
-import "../structs/Referendum.sol";
+import "../structs/Candidate.sol";
 
-contract ElectionFactory {
+contract CandidateFactory {
 
   using SafeMath for uint256;
 
-  event NewElection(uint id, string name);
+  event NewCandidate(uint id, string firstname, string lastname);
 
-  Candidats[] public candidats;
-  Election public election = Election("election presidentielle");
+  Candidate[] public candidates;
 
-  VoteFactory public voteFactory = VoteFactory();
+  mapping (uint => address) public candidateToOwner;
 
-  function getReferendumResults() public view returns (Referendum memory, Vote[] memory) {
-    return (referendum, votes);
-  }
+  function createCandidate(string _firstname, string _lastname) public {
+    candidates.push(Candidate(_firstname, _lastname));
+    uint id = candidates.length - 1;
+    candidateToOwner[id] = msg.sender;
 
-  function createVote(bool _result) public {
-    votes.push(Vote(true));
-    uint id = votes.length - 1;
-    voteToOwner[id] = msg.sender;
-
-    require(!ownerHasVoted[msg.sender], "Cannot vote more than once");
-
-    ownerHasVoted[msg.sender] = true;
-    emit NewVote(id, _result);
+    emit NewCandidate(id, _firstname, _lastname);
   }
 }
