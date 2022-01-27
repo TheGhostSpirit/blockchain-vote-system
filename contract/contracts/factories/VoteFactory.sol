@@ -10,21 +10,21 @@ contract VoteFactory is Ownable {
 
   using SafeMath for uint256;
 
-  event NewVote(uint id, bool result);
+  event NewVote(uint id, uint _electionId, uint _candidateId);
 
   Vote[] public votes;
 
   mapping (uint => address) public voteToOwner;
-  mapping (address => bool) ownerHasVoted;
+  mapping (address => uint) ownerHasVoted;
 
-  function createVote(bool _result) public {
-    votes.push(Vote(true));
-    uint id = votes.length - 1;
-    voteToOwner[id] = msg.sender;
+  function createVote(uint _electionId, uint _candidateId) public {
+    votes.push(Vote(_electionId, _candidateId));
+    uint voteId = votes.length - 1;
+    voteToOwner[voteId] = msg.sender;
 
     require(!ownerHasVoted[msg.sender], "Cannot vote more than once");
 
-    ownerHasVoted[msg.sender] = true;
-    emit NewVote(id, _result);
+    ownerHasVoted[msg.sender] = voteId;
+    emit NewVote(voteId, _electionId, _candidateId);
   }
 }
