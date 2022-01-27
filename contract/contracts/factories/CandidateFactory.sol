@@ -14,17 +14,16 @@ contract CandidateFactory is Ownable {
   Candidate[] public candidates;
 
   mapping (uint => address) public candidateToOwner;
-  mapping (uint => address) public candidateToElection;
   mapping (address => mapping (uint => uint)) ownerIsCandidateForElection;
 
   function createCandidate(uint _electionId, string _firstname, string _lastname) public {
     candidates.push(Candidate(_electionId, _firstname, _lastname));
     uint candidateId = candidates.length - 1;
-    candidateToOwner[id] = msg.sender;
+    candidateToOwner[candidateId] = msg.sender;
 
-    require(!ownerIsCandidateForElection[msg.sender], "Cannot vote more than once");
+    require(!ownerIsCandidateForElection[msg.sender][_electionId], "Cannot vote more than once");
 
-    ownerIsCandidateForElection[msg.sender] = candidateId;
+    ownerIsCandidateForElection[msg.sender][_electionId] = candidateId;
     emit NewCandidate(id, _electionId, _firstname, _lastname);
   }
 }
