@@ -15,7 +15,7 @@ contract VoteFactory is Ownable {
   Vote[] public votes;
 
   mapping (uint => address) public voteToOwner;
-  mapping (address => uint) ownerHasVoted;
+  mapping (address => bool) ownerHasVoted;
 
   function createVote(uint _electionId, uint _candidateId) public {
     votes.push(Vote(_electionId, _candidateId));
@@ -24,7 +24,7 @@ contract VoteFactory is Ownable {
 
     require(!ownerHasVoted[msg.sender], "Cannot vote more than once");
 
-    ownerHasVoted[msg.sender] = voteId;
+    ownerHasVoted[msg.sender] = true;
     emit NewVote(voteId, _electionId, _candidateId);
   }
 }

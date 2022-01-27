@@ -2,10 +2,11 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
 import "../structs/Election.sol";
 
-contract ElectionFactory {
+contract ElectionFactory is Ownable {
 
   using SafeMath for uint256;
 
@@ -19,7 +20,7 @@ contract ElectionFactory {
     return (elections);
   }
 
-  function createElection(string _name) public {
+  function createElection(string memory _name) public {
     elections.push(Election(_name));
     uint id = elections.length - 1;
     electionToOwner[id] = msg.sender;
