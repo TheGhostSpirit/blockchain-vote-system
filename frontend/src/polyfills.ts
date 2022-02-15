@@ -59,6 +59,43 @@
  */
 import 'zone.js';  // Included with Angular CLI.
 
+(window as any).global = window;
+global.Buffer = global.Buffer || require('buffer').Buffer;
+(window as any).process = {
+  env: { DEBUG: undefined },
+  version: ''
+};
+
+process.nextTick = (function () {
+  var canSetImmediate = typeof window !== 'undefined'
+  && (window as any).setImmediate;
+  var canPost = typeof window !== 'undefined'
+  && window.postMessage && window.addEventListener;
+  if (canSetImmediate) {
+      return function (f) { return (window as any).setImmediate(f as any) };
+  }
+  if (canPost) {
+      var queue = [];
+      window.addEventListener('message', function (ev) {
+          var source = ev.source;
+          if ((source === window || source === null) && ev.data === 'process-tick') {
+              ev.stopPropagation();
+              if (queue.length > 0) {
+                  var fn = queue.shift();
+                  fn();
+              }
+          }
+      }, true);
+      return function nextTick(fn) {
+          queue.push(fn);
+          window.postMessage('process-tick', '*');
+      };
+  }
+  return function nextTick(fn) {
+      setTimeout(fn, 0);
+  };
+})();
+
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
